@@ -36,7 +36,7 @@ class OCRService:
             for i in sorted_indices:
                 text = rec_res[i][0]
                 conf = rec_res[i][1]
-                if conf > 0.2:  # Chỉ lấy kết quả có độ tin cậy > 40%
+                if conf > 0.4:  # Chỉ lấy kết quả có độ tin cậy > 40%
                     combined_text.append(str(text))
 
             return " ".join(combined_text).upper() if combined_text else "Unknown"

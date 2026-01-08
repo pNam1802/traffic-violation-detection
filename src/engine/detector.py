@@ -8,9 +8,9 @@ class TrafficDetector:
         self.p_model = plate_model
         self.ocr_service = OCRService(ocr_model)
 
-    def detect_and_track(self, frame):
+    def detect_and_track(self, frame, conf=0.7):
         # Tracking xe với ByteTrack hoặc Botsort (có sẵn trong YOLOv8)
-        return self.v_model.track(frame, persist=True, verbose=False)[0]
+        return self.v_model.track(frame, persist=True, verbose=False, conf=conf)[0]
 
     def get_license_plate(self, car_img):
         # Phát hiện vị trí biển số trong ảnh xe đã crop
