@@ -1,0 +1,46 @@
+# ===== AI / ML models =====
+*.pt
+*.pth
+*.onnx
+*.h5
+*.ckpt
+*.weights
+
+# ===== Video files =====
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# ===== Images (optional) =====
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.tiff
+
+# ===== Dataset / media folders =====
+data/
+dataset/
+datasets/
+videos/
+media/
+outputs/
+results/
+
+# ===== Logs & cache =====
+*.log
+__pycache__/
+*.pyc
+
+# ===== IDE / OS =====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ===== Environment =====
+.env
+venv/
+.env/
