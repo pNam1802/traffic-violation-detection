@@ -1,5 +1,15 @@
 # Traffic Violation Detection System
 
+<p align="center">
+  <img width="45%" alt="Demo UI"
+       src="https://github.com/user-attachments/assets/657428e1-8cab-4418-a708-76277d854478" />
+  <img width="45%" alt="Violation Result"
+       src="https://github.com/user-attachments/assets/2cf1de60-10e6-4fb9-804e-985c670474c3" />
+</p>
+
+
+
+
 This project detects traffic violations from video using Python (Streamlit + OpenCV + PyTorch models). It performs vehicle detection, license plate recognition (OCR), and violation detection (e.g., red-light running or crossing the stop line).
 
 ## Overview
