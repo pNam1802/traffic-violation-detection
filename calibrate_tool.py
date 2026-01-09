@@ -92,4 +92,4 @@ def calibrate(video_path):
 
 
 if __name__ == "__main__":
-    calibrate("models/AI-gen.mp4")
+    calibrate("models/233766300228328287.mp4")

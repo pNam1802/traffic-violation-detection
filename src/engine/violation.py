@@ -16,6 +16,7 @@ class ViolationEngine:
         new_violations = []
         results = self.detector.detect_and_track(frame)
 
+
         if results.boxes.id is not None:
             boxes = results.boxes.xyxy.cpu().numpy()
             ids = results.boxes.id.cpu().numpy().astype(int)
@@ -62,20 +63,34 @@ class ViolationEngine:
         return frame, new_violations, light_status
 
     def _draw_ui(self, frame, status):
-        # 1. Lấy tọa độ vạch dừng
+        # 1. Tạo overlay để vẽ các mảng màu trong suốt
+        overlay = frame.copy()
+
+        # 2. Bôi màu toàn bộ làn đường (Lane Polygon)
+        # Thay vì offset 60px, ta dùng vùng polygon chuẩn của làn đường
+        lane_pts = np.array(self.config['lane_polygon'], dtype=np.int32)
+
+        # Màu xanh lá nhạt (0, 255, 0) để chỉ thị đây là vùng giám sát
+        cv2.fillPoly(overlay, [lane_pts], (0, 255, 0))
+
+        # 3. Vẽ vạch dừng (Stop Line) để làm mốc vi phạm
         line = self.config['stop_line']
         p1, p2 = tuple(line[0]), tuple(line[1])
 
-        # 2. Tạo "Vùng an toàn" (Safe Zone) màu xanh nhạt phía dưới vạch
-        # Chúng ta tạo một đa giác dựa trên vạch dừng và kéo xuống 50 pixel
-        offset = 60  # Độ dày của vùng xanh
-        p3 = (p2[0], p2[1] + offset)
-        p4 = (p1[0], p1[1] + offset)
-        safe_zone_pts = np.array([p1, p2, p3, p4], dtype=np.int32)
+        # Nếu đèn đỏ, vạch dừng hiện màu đỏ rực để cảnh báo, ngược lại để màu trắng
+        line_color = (0, 0, 255) if status == "RED" else (255, 255, 255)
+        line_thickness = 4 if status == "RED" else 2
+        cv2.line(frame, p1, p2, line_color, line_thickness)
 
-        # Vẽ mảng màu xanh nhạt trong suốt
-        overlay = frame.copy()
-        cv2.fillPoly(overlay, [safe_zone_pts], (255, 255, 0))  # Màu Cyan/Xanh nhạt
+        # 4. Hòa trộn overlay vào ảnh gốc (alpha=0.2 giúp màu rất nhẹ, không che mất mặt đường)
+        cv2.addWeighted(overlay, 0.2, frame, 0.8, 0, frame)
+
+        # 5. Vẽ vùng check đèn (ROI)
+        rx, ry, rw, rh = self.config['light_roi']
+        light_color = (0, 0, 255) if status == "RED" else (0, 255, 0)
+        cv2.rectangle(frame, (rx, ry), (rx + rw, ry + rh), light_color, 2)
+        cv2.putText(frame, f"LIGHT: {status}", (rx, ry - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, light_color, 2)
 
         # Nếu đèn đỏ, vẽ thêm một mảng đỏ mỏng ngay trên vạch để cảnh báo
         if status == "RED":
