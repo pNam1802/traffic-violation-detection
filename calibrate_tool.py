@@ -59,6 +59,7 @@ def calibrate(video_path):
     # --- QUAN TRỌNG: Quy đổi tọa độ về kích thước gốc ---
     scale = original_w / display_w
 
+    # --- THAY THẾ TỪ ĐOẠN NÀY ---
     if len(points_resized) == 4:
         # 1. Quy đổi ROI đèn
         light_roi = [int(i * scale) for i in roi_resized]
@@ -66,14 +67,25 @@ def calibrate(video_path):
         # 2. Quy đổi 4 điểm vùng làn đường
         lane_polygon = [[int(pt[0] * scale), int(pt[1] * scale)] for pt in points_resized]
 
-        # 3. Tự động lấy "Vạch dừng" là cạnh đầu tiên bạn vẽ (điểm 1 và điểm 2)
-        # Hoặc bạn có thể tùy chỉnh logic này
+        # 3. Xác định vạch dừng (Cạnh đầu tiên: Điểm 0 và Điểm 1)
         stop_line = [lane_polygon[0], lane_polygon[1]]
+
+        # 4. TỰ ĐỘNG TẠO VIOLATION_ZONE (Vùng vi phạm)
+        # Vì xe đi từ TRÊN xuống, vùng vi phạm sẽ nằm giữa vạch dừng và phần cuối làn đường
+        # Chúng ta sẽ lấy 2 điểm của vạch dừng và 2 điểm cuối cùng của lane_polygon
+        # Điều này giúp vùng vi phạm khớp hoàn toàn với hình dáng làn đường
+        violation_zone = [
+            lane_polygon[0],  # Trái trên (tại vạch dừng)
+            lane_polygon[1],  # Phải trên (tại vạch dừng)
+            lane_polygon[2],  # Phải dưới (cuối làn)
+            lane_polygon[3]  # Trái dưới (cuối làn)
+        ]
 
         config_data = {
             "light_roi": light_roi,
             "lane_polygon": lane_polygon,
-            "stop_line": stop_line
+            "stop_line": stop_line,
+            "violation_zone": violation_zone  # Thêm cái này để hết lỗi KeyError
         }
 
         with open("data/config.json", "w") as f:
@@ -81,8 +93,7 @@ def calibrate(video_path):
 
         print("\n" + "=" * 30)
         print("THÀNH CÔNG!")
-        print(f"Vùng làn đường: {lane_polygon}")
-        print(f"Vạch dừng (cạnh 1-2): {stop_line}")
+        print(f"Vùng vi phạm (Violation Zone) đã được khởi tạo khớp với phần dưới làn đường.")
         print("=" * 30)
     else:
         print(f"Lỗi: Bạn mới chọn {len(points_resized)} điểm. Cần đúng 4 điểm!")
@@ -92,4 +103,4 @@ def calibrate(video_path):
 
 
 if __name__ == "__main__":
-    calibrate("models/233766300228328287.mp4")
+    calibrate("models/red_light_violation.mp4")
