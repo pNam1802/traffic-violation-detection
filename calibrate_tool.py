@@ -59,7 +59,7 @@ def calibrate(video_path):
     # --- QUAN TRỌNG: Quy đổi tọa độ về kích thước gốc ---
     scale = original_w / display_w
 
-    # --- THAY THẾ TỪ ĐOẠN NÀY ---
+  
     if len(points_resized) == 4:
         # 1. Quy đổi ROI đèn
         light_roi = [int(i * scale) for i in roi_resized]
@@ -103,4 +103,4 @@ def calibrate(video_path):
 
 
 if __name__ == "__main__":
-    calibrate("models/red_light_violation.mp4")
+    calibrate("models/test/a0f538ba8dd98ab1a42fa8301c20d9b1.mp4")

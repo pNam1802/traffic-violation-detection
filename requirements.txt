@@ -1,2 +1,8 @@
-ultralytics
-opencv-python
+streamlit>=1.10
+ultralytics>=8.0
+opencv-python>=4.5
+torch>=1.12
+paddleocr>=2.0
+paddlepaddle>=2.4
+numpy
+

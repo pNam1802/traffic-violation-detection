@@ -78,5 +78,9 @@ Detected violations will appear in the sidebar (with license plate snapshots) an
 - Model load failures: check `models/*.pt` paths and PyTorch version compatibility.
 - Streamlit does not open: check firewall and port settings, or try `streamlit run main.py --server.port 8502`.
 - Video not processed: verify the file's codec and integrity; re-encode to H.264 MP4 if necessary.
+- PaddleOCR lỗi `ConvertPirAttribute2RuntimeAttribute ... onednn_instruction.cc:118`:
+     - Lỗi này thường do oneDNN/PIR trên Windows CPU.
+     - Project đã tắt oneDNN/PIR trong `src/core/models.py` khi khởi tạo OCR.
+     - Nếu vẫn gặp, thử cài lại bản ổn định: `pip install --upgrade --force-reinstall paddlepaddle==2.6.2 paddleocr==2.10.0`.
 
 

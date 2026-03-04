@@ -43,4 +43,5 @@ Thumbs.db
 # ===== Environment =====
 .env
 venv/
+.venv/
 .env/
